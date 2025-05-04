@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${item != null && item.id != null ? '商品編集' : '商品追加'}">商品追加/編集</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 th:text="${item != null && item.id != null ? '商品編集' : '商品追加'}">商品追加/編集</h1>
+            <nav>
+                <a th:href="@{/inventory}">在庫一覧に戻る</a>
+            </nav>
+        </header>
+
+        <div class="content">
+            <form th:action="@{${item != null && item.id != null ? '/inventory/edit/' + item.id : '/inventory/add'}}"
+                  th:object="${item}" method="post" class="item-form">
+                <input type="hidden" th:if="${item != null && item.id != null}" th:field="*{id}">
+                <div class="form-group">
+                    <label for="name">商品名:</label>
+                    <input type="text" id="name" th:field="*{name}" required>
+                    <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">カテゴリー:</label>
+                    <select id="category" th:field="*{category}" required>
+                        <option value="">カテゴリーを選択</option>
+                        <option th:each="cat : ${categories}"
+                                th:value="${cat}"
+                                th:text="${cat}">
+                        </option>
+                    </select>
+                    <div class="error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">説明:</label>
+                    <textarea id="description" th:field="*{description}" rows="3"></textarea>
+                    <div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="quantity">在庫数:</label>
+                        <input type="number" id="quantity" th:field="*{quantity}" required min="0">
+                        <div class="error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="minQuantity">最小在庫数:</label>
+                        <input type="number" id="minQuantity" th:field="*{minQuantity}" min="0">
+                        <div class="error" th:if="${#fields.hasErrors('minQuantity')}" th:errors="*{minQuantity}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxQuantity">最大在庫数:</label>
+                        <input type="number" id="maxQuantity" th:field="*{maxQuantity}" min="0">
+                        <div class="error" th:if="${#fields.hasErrors('maxQuantity')}" th:errors="*{maxQuantity}"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">価格:</label>
+                    <input type="number" id="price" th:field="*{price}" required min="0" step="0.01">
+                    <div class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">保存</button>
+                    <a th:href="@{/inventory}" class="btn btn-secondary">キャンセル</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 

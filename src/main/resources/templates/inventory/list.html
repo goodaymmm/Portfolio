@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>在庫一覧</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>在庫管理システム</h1>
+            <nav>
+                <a th:href="@{/inventory}">在庫一覧</a>
+                <a th:href="@{/sales}">売上管理</a>
+                <a th:href="@{/logout}">ログアウト</a>
+            </nav>
+        </header>
+
+        <div class="content">
+            <div class="actions">
+                <a th:href="@{/inventory/add}" class="btn">商品追加</a>
+                <a th:href="@{/inventory/import}" class="btn">CSVインポート</a>
+                <a th:href="@{/inventory/export}" class="btn">CSVエクスポート</a>
+                <a th:href="@{/inventory/low-stock}" class="btn btn-warning">在庫不足商品</a>
+            </div>
+
+            <div class="search-form">
+                <form th:action="@{/inventory/search}" method="get">
+                    <input type="text" name="name" placeholder="商品名で検索">
+                    <input type="text" name="category" placeholder="カテゴリーで検索">
+                    <input type="number" name="minPrice" placeholder="最低価格">
+                    <input type="number" name="maxPrice" placeholder="最高価格">
+                    <button type="submit">検索</button>
+                </form>
+            </div>
+
+            <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+            <div th:if="${category}" class="category-header">
+                <h2 th:text="'カテゴリー: ' + ${category}"></h2>
+            </div>
+
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>商品ID</th>
+                        <th>商品名</th>
+                        <th>カテゴリー</th>
+                        <th>価格</th>
+                        <th>在庫数</th>
+                        <th>最小在庫数</th>
+                        <th>最大在庫数</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${items}" th:class="${item.isBelowMinQuantity() ? 'low-stock' : ''}">
+                        <td th:text="${item.itemId}"></td>
+                        <td th:text="${item.name}"></td>
+                        <td>
+                            <a th:href="@{/inventory/category/{category}(category=${item.category})}" 
+                               th:text="${item.category}"></a>
+                        </td>
+                        <td th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${item.minQuantity}"></td>
+                        <td th:text="${item.maxQuantity}"></td>
+                        <td>
+                            <a th:href="@{/inventory/edit/{id}(id=${item.id})}" class="btn btn-sm">編集</a>
+                            <form th:action="@{/inventory/delete/{id}(id=${item.id})}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('本当に削除しますか？')">削除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html> 
