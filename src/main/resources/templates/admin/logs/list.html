@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>操作ログ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .log-card {
+            transition: transform 0.2s;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .log-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">
+                <i class="bi bi-journal-text text-primary"></i>
+                操作ログ
+            </h2>
+            <div>
+                <form th:action="@{/admin/logs/search}" method="get" class="d-inline">
+                    <div class="input-group">
+                        <input type="datetime-local" name="startDate" class="form-control" required>
+                        <span class="input-group-text">から</span>
+                        <input type="datetime-local" name="endDate" class="form-control" required>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i>
+                            検索
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div th:each="log : ${logs}" class="col-md-6 mb-4">
+                <div class="card log-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-activity text-primary"></i>
+                                <span th:text="${log.action}"></span>
+                            </h5>
+                            <small class="text-muted" th:text="${#temporals.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></small>
+                        </div>
+                        <p class="card-text" th:text="${log.details}"></p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i>
+                                <span th:text="${log.user.username}"></span>
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-globe"></i>
+                                <span th:text="${log.ipAddress}"></span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

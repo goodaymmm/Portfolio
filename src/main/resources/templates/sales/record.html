@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>売上記録 - 在庫管理システム</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>在庫管理システム</h1>
+            <nav>
+                <a th:href="@{/inventory}">在庫一覧</a>
+                <a th:href="@{/sales}">売上管理</a>
+                <div sec:authorize="hasRole('ADMIN')" style="display: inline;">
+                    <a th:href="@{/admin/users/list}">ユーザー管理</a>
+                </div>
+                <a th:href="@{/logout}">ログアウト</a>
+            </nav>
+        </header>
+
+        <div class="content">
+            <h2>売上記録</h2>
+
+            <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+            <form th:action="@{/sales/record}" method="post" class="form">
+                <div class="form-group">
+                    <label for="itemId">商品:</label>
+                    <select id="itemId" name="itemId" required>
+                        <option value="">商品を選択してください</option>
+                        <option th:each="item : ${items}"
+                                th:value="${item.id}"
+                                th:text="${item.name + ' (在庫: ' + item.quantity + ')'}"
+                                th:disabled="${item.quantity <= 0}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">数量:</label>
+                    <input type="number" id="quantity" name="quantity" min="1" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">記録</button>
+                    <a th:href="@{/sales}" class="btn btn-secondary">キャンセル</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 

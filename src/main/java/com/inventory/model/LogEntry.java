@@ -2,12 +2,15 @@ package com.inventory.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "log_entries")
-public class LogEntry {
+public class LogEntry implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,15 +21,19 @@ public class LogEntry {
     @Column(nullable = false)
     private String details;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
+
+    @Column
+    private String ipAddress;
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        timestamp = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -53,19 +60,27 @@ public class LogEntry {
         this.details = details;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 } 

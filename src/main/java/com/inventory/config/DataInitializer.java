@@ -22,6 +22,8 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         // ロールの初期化
         userService.initializeRoles();
+        
+        // 管理者ユーザーの初期化
         userService.initializeAdminUser();
 
         // 在庫データの初期化

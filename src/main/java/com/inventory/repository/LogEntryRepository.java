@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface LogEntryRepository extends JpaRepository<LogEntry, Long> {
-    List<LogEntry> findByUserId(Long userId);
-    List<LogEntry> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
-    List<LogEntry> findByAction(String action);
+    List<LogEntry> findByTimestampBetweenOrderByTimestampDesc(LocalDateTime startDate, LocalDateTime endDate);
+    List<LogEntry> findByUserUsernameOrderByTimestampDesc(String username);
 } 

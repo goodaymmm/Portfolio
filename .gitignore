@@ -2,8 +2,13 @@
 *.class
 
 # Log file
-logs/
 *.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
 
 # Package Files
 *.jar
@@ -14,9 +19,13 @@ logs/
 *.tar.gz
 *.rar
 
-# Build directory
-target/
-build/
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+replay_pid*
+
+# Environment specific files
+.env
+*.env
 
 # IDE specific files
 .idea/
@@ -35,9 +44,12 @@ src/main/resources/application-prod.properties
 *.mv.db
 *.trace.db
 
-# Environment specific files
-.env
-*.env
+# Portfolio and rmmm directories
+Portfolio/
+rmmm/
+
+# Mac
+.DS_Store
 
 # Temporary files
 *.tmp

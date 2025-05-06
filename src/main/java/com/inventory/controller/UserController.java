@@ -23,14 +23,14 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
+    public String registerUser(User user, Model model) {
         try {
-            userService.createUser(user, "ROLE_USER");
-            redirectAttributes.addFlashAttribute("message", "User registered successfully");
+            userService.registerUser(user);
+            model.addAttribute("message", "ユーザー登録が完了しました。ログインしてください。");
             return "redirect:/login";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/users/register";
+            model.addAttribute("error", "ユーザー登録に失敗しました: " + e.getMessage());
+            return "users/register";
         }
     }
 
