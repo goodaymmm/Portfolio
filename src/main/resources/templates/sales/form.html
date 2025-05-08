@@ -1,35 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: html(~{::title}, ~{::section}, ~{::pageTitle}, ~{::pageActions})}">
 <head>
     <meta charset="UTF-8">
-    <title>売上登録</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>売上登録 | 在庫管理システム</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .form-card {
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <div th:replace="~{fragments/header :: header}"></div>
+    <!-- ページタイトル部分 -->
+    <h2 class="mb-0" th:fragment="pageTitle">
+        <i class="bi bi-cart-plus text-primary"></i>
+        売上登録
+    </h2>
+    
+    <!-- ページアクション部分 -->
+    <div th:fragment="pageActions" class="action-buttons">
+        <a th:href="@{/sales}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            売上一覧に戻る
+        </a>
+    </div>
 
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">
-                <i class="bi bi-cart-plus text-primary"></i>
-                売上登録
-            </h2>
-            <a th:href="@{/sales}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i>
-                売上一覧に戻る
-            </a>
-        </div>
-
+    <!-- メインコンテンツ部分 -->
+    <section>
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card form-card">
+            <div class="col-md-10">
+                <div class="card shadow-sm">
                     <div class="card-body">
                         <form th:action="@{/sales/record}" method="post">
                             <div class="mb-3">
@@ -38,7 +38,7 @@
                                     <option value="">商品を選択してください</option>
                                     <option th:each="item : ${items}" 
                                             th:value="${item.id}" 
-                                            th:text="${item.itemId + ' - ' + item.name + ' (' + item.price + '円)'}">
+                                            th:text="${item.itemId + ' - ' + item.name + ' (' + #numbers.formatInteger(item.price, 0, 'COMMA') + '円)'}">
                                     </option>
                                 </select>
                             </div>
@@ -49,10 +49,12 @@
                                        required min="1" value="1">
                             </div>
 
-                            <div class="d-grid gap-2">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a th:href="@{/sales}" class="btn btn-outline-secondary me-md-2">
+                                    <i class="bi bi-x-circle"></i> キャンセル
+                                </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-circle"></i>
-                                    売上を記録
+                                    <i class="bi bi-check-circle"></i> 売上を記録
                                 </button>
                             </div>
                         </form>
@@ -60,7 +62,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

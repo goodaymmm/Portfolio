@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: html(~{::title}, ~{::section}, ~{::pageTitle}, ~{::pageActions})}">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${item != null && item.id != null ? '商品編集' : '商品追加'}">商品追加/編集</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${item != null && item.id != null ? '商品編集' : '商品追加'} + ' | 在庫管理システム'">商品追加/編集 | 在庫管理システム</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         .form-card {
             border: none;
@@ -13,27 +17,76 @@
     </style>
 </head>
 <body>
-    <div th:replace="~{fragments/header :: header}"></div>
+    <header class="bg-dark text-white">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/">在庫管理システム</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/inventory}">
+                                <i class="bi bi-box-seam"></i> 在庫一覧
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/sales}">
+                                <i class="bi bi-graph-up"></i> 売上管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/admin/users/list}">
+                                <i class="bi bi-people"></i> ユーザー管理
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <span class="nav-link me-3">
+                                <i class="bi bi-person-circle"></i>
+                                <span>ユーザー</span>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="btn btn-outline-light">
+                                    <i class="bi bi-box-arrow-right"></i> ログアウト
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">
-                <i th:class="${item != null && item.id != null ? 'bi bi-pencil-square text-warning' : 'bi bi-plus-circle text-primary'}"></i>
-                <span th:text="${item != null && item.id != null ? '商品編集' : '商品追加'}">商品追加/編集</span>
-            </h2>
-            <a th:href="@{/inventory}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i>
-                在庫一覧に戻る
-            </a>
-        </div>
+    <!-- ページタイトル部分 -->
+    <h2 class="mb-0" th:fragment="pageTitle">
+        <i th:class="${item != null && item.id != null ? 'bi bi-pencil-square text-warning' : 'bi bi-plus-circle text-primary'}"></i>
+        <span th:text="${item != null && item.id != null ? '商品編集' : '商品追加'}">商品追加/編集</span>
+    </h2>
+    
+    <!-- ページアクション部分 -->
+    <div th:fragment="pageActions" class="action-buttons">
+        <a th:href="@{/inventory}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            在庫一覧に戻る
+        </a>
+    </div>
 
+    <!-- メインコンテンツ部分 -->
+    <section>
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card form-card">
+            <div class="col-md-10">
+                <div class="card shadow-sm">
                     <div class="card-body">
-                        <form th:action="@{${item != null && item.id != null ? '/inventory/edit/' + item.id : '/inventory/add'}}"
-                              th:object="${item}" method="post" class="item-form">
+                        <form th:action="@{/inventory/save}"
+                              th:object="${item}" method="post" class="item-form" id="itemForm">
                             <input type="hidden" th:if="${item != null && item.id != null}" th:field="*{id}">
+                            <input type="hidden" th:field="*{itemId}">
+                            
                             <div class="mb-3">
                                 <label for="name" class="form-label">商品名:</label>
                                 <input type="text" id="name" th:field="*{name}" class="form-control" required>
@@ -42,13 +95,20 @@
 
                             <div class="mb-3">
                                 <label for="category" class="form-label">カテゴリー:</label>
-                                <select id="category" th:field="*{category}" class="form-select" required>
+                                <select id="category" class="form-select" required>
                                     <option value="">カテゴリーを選択</option>
+                                    <option th:if="${item != null && item.category != null}" 
+                                            th:value="${item.category}" 
+                                            th:text="${item.category} "
+                                            selected>
+                                    </option>
                                     <option th:each="cat : ${categories}"
-                                            th:value="${cat}"
+                                            th:if="${item == null || item.category == null || cat != item.category}"
+                                            th:value="${cat}" 
                                             th:text="${cat}">
                                     </option>
                                 </select>
+                                <input type="hidden" th:field="*{category}" id="category-hidden">
                                 <div class="text-danger" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
                             </div>
 
@@ -59,29 +119,29 @@
                             </div>
 
                             <div class="row g-3 mb-3">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label for="quantity" class="form-label">在庫数:</label>
                                     <input type="number" id="quantity" th:field="*{quantity}" class="form-control" required min="0">
                                     <div class="text-danger" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label for="minQuantity" class="form-label">最小在庫数:</label>
-                                    <input type="number" id="minQuantity" th:field="*{minQuantity}" class="form-control" min="0">
+                                    <input type="number" id="minQuantity" th:field="*{minQuantity}" class="form-control" min="0" required>
                                     <div class="text-danger" th:if="${#fields.hasErrors('minQuantity')}" th:errors="*{minQuantity}"></div>
                                 </div>
-
-                                <div class="col-md-4">
-                                    <label for="maxQuantity" class="form-label">最大在庫数:</label>
-                                    <input type="number" id="maxQuantity" th:field="*{maxQuantity}" class="form-control" min="0">
-                                    <div class="text-danger" th:if="${#fields.hasErrors('maxQuantity')}" th:errors="*{maxQuantity}"></div>
-                                </div>
+                                
+                                <!-- 最大在庫数フィールドは非表示 -->
+                                <input type="hidden" id="maxQuantity" th:field="*{maxQuantity}">
                             </div>
+
+                            <!-- ステータスフィールドは非表示 -->
+                            <input type="hidden" id="status" th:field="*{status}">
 
                             <div class="mb-4">
                                 <label for="price" class="form-label">価格:</label>
                                 <div class="input-group">
-                                    <input type="number" id="price" th:field="*{price}" class="form-control" required min="0" step="0.01">
+                                    <input type="text" id="price" th:field="*{price}" class="form-control" required min="0">
                                     <span class="input-group-text">円</span>
                                 </div>
                                 <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
@@ -100,7 +160,101 @@
                 </div>
             </div>
         </div>
-    </div>
+        
+        <!-- スクリプトをページ内に直接埋め込む -->
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                // カテゴリー選択の処理
+                var categorySelect = document.getElementById('category');
+                var categoryHidden = document.getElementById('category-hidden');
+                
+                // サーバーから渡された現在のカテゴリー値
+                var currentCategory = /*[[${item != null && item.category != null ? item.category : ''}]]*/ '';
+                console.log('Current category:', currentCategory);
+                
+                // 初期値をhiddenフィールドに設定
+                if (currentCategory) {
+                    categoryHidden.value = currentCategory;
+                }
+                
+                // selectの変更をhiddenフィールドに反映
+                categorySelect.addEventListener('change', function() {
+                    categoryHidden.value = this.value;
+                    console.log('Category changed to:', this.value);
+                });
+                
+                // フォーム送信前の最終確認
+                document.getElementById('itemForm').addEventListener('submit', function(e) {
+                    // カテゴリーがhiddenフィールドに正しく設定されているか確認
+                    if (!categoryHidden.value && categorySelect.value) {
+                        categoryHidden.value = categorySelect.value;
+                    }
+                });
+                
+                // 価格フィールドの取得
+                var priceInput = document.getElementById('price');
+                
+                // 初期表示時に小数点以下を切り捨てて整数表示
+                if (priceInput && priceInput.value) {
+                    var initialValue = Math.floor(Number(priceInput.value));
+                    priceInput.value = initialValue.toLocaleString();
+                }
+                
+                // キー入力時に数字とバックスペース、矢印キーのみ許可
+                priceInput.addEventListener('keydown', function(e) {
+                    // 許可するキー: 数字(0-9)、バックスペース、Delete、矢印キー、Tab
+                    if (
+                        (e.key >= '0' && e.key <= '9') || 
+                        e.key === 'Backspace' || 
+                        e.key === 'Delete' || 
+                        e.key === 'ArrowLeft' || 
+                        e.key === 'ArrowRight' ||
+                        e.key === 'Tab'
+                    ) {
+                        return true;
+                    } else {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+                
+                // 入力時に数字以外を除去
+                priceInput.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^\d]/g, '');
+                });
+                
+                // フォーカス時の処理
+                priceInput.addEventListener('focus', function(e) {
+                    // カンマを取り除く
+                    var value = this.value.replace(/,/g, '');
+                    this.value = value;
+                });
+                
+                // フォーカスが外れた時の処理
+                priceInput.addEventListener('blur', function(e) {
+                    if (this.value) {
+                        // 空でなければ、整数値に変換してカンマ区切りを適用
+                        var value = parseInt(this.value.replace(/,/g, '')) || 0;
+                        this.value = value.toLocaleString();
+                    } else {
+                        // 空なら0を設定
+                        this.value = "0";
+                    }
+                });
+                
+                // フォーム送信時の処理
+                document.getElementById('itemForm').addEventListener('submit', function(e) {
+                    if (priceInput && priceInput.value) {
+                        // カンマを除去して整数値にする
+                        var numValue = parseInt(priceInput.value.replace(/,/g, '')) || 0;
+                        priceInput.value = numValue;
+                    } else {
+                        priceInput.value = "0";
+                    }
+                });
+            });
+        </script>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

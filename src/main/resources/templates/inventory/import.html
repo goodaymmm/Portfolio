@@ -1,21 +1,50 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: html(~{::title}, ~{::section}, ~{::pageTitle}, ~{::pageActions})}">
 <head>
-    <title>CSVインポート</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CSVインポート | 在庫管理システム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>CSVファイルからの商品インポート</h1>
-            <nav>
-                <a th:href="@{/inventory}">在庫一覧に戻る</a>
-            </nav>
-        </header>
+    <!-- ページタイトル部分 -->
+    <h2 class="mb-0" th:fragment="pageTitle">
+        <i class="bi bi-upload text-success"></i>
+        CSVファイルからの商品インポート
+    </h2>
+    
+    <!-- ページアクション部分 -->
+    <div th:fragment="pageActions" class="action-buttons">
+        <a th:href="@{/inventory}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            在庫一覧に戻る
+        </a>
+    </div>
 
-        <div class="content">
-            <div class="import-instructions">
-                <h2>CSVファイル形式について</h2>
+    <!-- メインコンテンツ部分 -->
+    <section>
+        <div th:if="${message}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${message}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-info-circle text-primary"></i>
+                    CSVファイル形式について
+                </h5>
                 <p>CSVファイルには以下の列が必要です：</p>
                 <ul>
                     <li><strong>商品名</strong> - 商品の名前（必須）</li>
@@ -25,30 +54,41 @@
                     <li><strong>最小在庫数</strong> - 最小在庫数（任意）</li>
                     <li><strong>価格</strong> - 商品の価格（必須）</li>
                 </ul>
-                <p>CSVファイルの例：</p>
-                <pre>
-商品名,カテゴリー,説明,在庫数,最小在庫数,価格
+                <p class="mb-1">CSVファイルの例：</p>
+                <pre class="bg-light p-3 rounded mb-0">商品名,カテゴリー,説明,在庫数,最小在庫数,価格
 ノートパソコン,電化製品,高性能ビジネスノートPC,100,10,150000
-デスクチェア,オフィス家具,人間工学に基づいたオフィスチェア,50,5,35000
-                </pre>
+デスクチェア,オフィス家具,人間工学に基づいたオフィスチェア,50,5,35000</pre>
             </div>
-
-            <div class="import-form">
-                <form th:action="@{/inventory/import}" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="file">CSVファイルを選択：</label>
-                        <input type="file" id="file" name="file" accept=".csv" required>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn">インポート</button>
-                        <a th:href="@{/inventory}" class="btn btn-secondary">キャンセル</a>
-                    </div>
-                </form>
-            </div>
-
-            <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
         </div>
-    </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="bi bi-file-earmark-arrow-up text-primary"></i>
+                            CSVファイルのアップロード
+                        </h5>
+                        <form th:action="@{/inventory/import}" method="post" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label for="file" class="form-label">CSVファイルを選択：</label>
+                                <input type="file" id="file" name="file" class="form-control" accept=".csv" required>
+                            </div>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a th:href="@{/inventory}" class="btn btn-outline-secondary me-md-2">
+                                    <i class="bi bi-x-circle"></i> キャンセル
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-upload"></i> インポート
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 

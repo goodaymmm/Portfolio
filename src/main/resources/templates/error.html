@@ -2,14 +2,32 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>エラー</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>エラー - 在庫管理システム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-<body>
-    <div class="container">
-        <h1 th:text="${error}">エラー</h1>
-        <div class="error-message" th:text="${message}">エラーメッセージ</div>
-        <a href="/" class="btn">ホームに戻る</a>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center p-5">
+                        <div class="error-icon mb-4">
+                            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 5rem;"></i>
+                        </div>
+                        <h1 class="display-5 mb-3" th:text="${error}">エラーが発生しました</h1>
+                        <p class="lead text-muted mb-4" th:text="${message}">申し訳ありませんが、システムエラーが発生しました。</p>
+                        <a href="/" class="btn btn-primary px-4 py-2">
+                            <i class="bi bi-house-door me-2"></i>ホームに戻る
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 

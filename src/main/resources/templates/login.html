@@ -1,29 +1,100 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ログイン - 在庫管理システム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            max-width: 400px;
+            width: 100%;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+        }
+        .login-logo p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 0.5rem;
+        }
+        .form-floating {
+            margin-bottom: 1rem;
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 6px;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+        }
+        .alert {
+            margin-top: 1rem;
+        }
+    </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>在庫管理システム</h2>
+    <div class="login-card">
+        <div class="login-logo">
+            <h1>在庫管理システム</h1>
+            <p>Inventory Management System</p>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error}">エラーメッセージ</span>
+        </div>
+        
+        <div th:if="${message}" class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${message}">成功メッセージ</span>
+        </div>
+        
         <form th:action="@{/login}" method="post">
-            <div class="form-group">
-                <label for="username">ユーザー名:</label>
-                <input type="text" id="username" name="username" required>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="username" name="username" placeholder="ユーザー名" required>
+                <label for="username">ユーザー名</label>
             </div>
-            <div class="form-group">
-                <label for="password">パスワード:</label>
-                <input type="password" id="password" name="password" required>
+            
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" name="password" placeholder="パスワード" required>
+                <label for="password">パスワード</label>
             </div>
-            <div class="form-group">
-                <button type="submit">ログイン</button>
-            </div>
-            <div th:if="${error}" class="error" th:text="${error}">
-            </div>
-            <div th:if="${message}" class="success" th:text="${message}">
-            </div>
+            
+            <button type="submit" class="btn btn-login">
+                <i class="bi bi-box-arrow-in-right me-2"></i>ログイン
+            </button>
         </form>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 

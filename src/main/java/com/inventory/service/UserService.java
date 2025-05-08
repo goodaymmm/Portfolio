@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -23,6 +26,98 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    // ユーザー名からユーザーを取得するメソッド
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("ユーザーが見つかりません: " + username));
+    }
+    
+    // ID指定でユーザーを取得するメソッド
+    public User findById(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return userRepository.findById(id).orElse(null);
+    }
+    
+    // ID指定でユーザーを取得する安全なメソッド（Optional型を返す）
+    public Optional<User> findByIdSafe(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return userRepository.findById(id);
+    }
+    
+    // 全ユーザーを取得するメソッド
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+    
+    // ユーザー情報を更新するメソッド
+    @Transactional
+    public User updateUser(User user) {
+        // ユーザーが存在するか確認
+        if (!userRepository.existsById(user.getId())) {
+            throw new RuntimeException("更新対象のユーザーが存在しません: ID=" + user.getId());
+        }
+        
+        // ユーザー名の重複確認（自分以外）
+        userRepository.findByUsername(user.getUsername())
+            .ifPresent(existingUser -> {
+                if (!existingUser.getId().equals(user.getId())) {
+                    throw new RuntimeException("このユーザー名は既に使用されています");
+                }
+            });
+        
+        // メールアドレスの重複確認（自分以外）
+        userRepository.findByEmail(user.getEmail())
+            .ifPresent(existingUser -> {
+                if (!existingUser.getId().equals(user.getId())) {
+                    throw new RuntimeException("このメールアドレスは既に使用されています");
+                }
+            });
+        
+        return userRepository.save(user);
+    }
+    
+    // ユーザーを削除するメソッド
+    @Transactional
+    public void deleteUser(Long id) {
+        // admin ユーザーは削除できないようにする
+        User user = findById(id);
+        if (user != null && "admin".equals(user.getUsername())) {
+            throw new RuntimeException("管理者ユーザーは削除できません");
+        }
+        
+        userRepository.deleteById(id);
+    }
+    
+    // ユーザーをロールと共に作成するメソッド
+    @Transactional
+    public User createUser(User user, String roleName) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new RuntimeException("このユーザー名は既に使用されています");
+        }
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("このメールアドレスは既に使用されています");    
+        }
+        
+        // パスワードをエンコード
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        
+        // 指定されたロールを設定
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new RuntimeException("指定されたロールが見つかりません: " + roleName));
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        user.setRoles(roles);
+        
+        // アカウントを有効化
+        user.setEnabled(true);
+        
+        return userRepository.save(user);
+    }
 
     @Transactional
     public void registerUser(User user) {
@@ -48,66 +143,52 @@ public class UserService {
         
         userRepository.save(user);
     }
-
-    @Transactional
-    public void createUser(User user, String roleName) {
-        if (userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("このユーザー名は既に使用されています。");
-        }
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("このメールアドレスは既に使用されています。");
-        }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
-        Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new RuntimeException("指定されたロールが見つかりません。"));
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        user.setRoles(roles);
-        
-        user.setEnabled(true);
-        
-        userRepository.save(user);
-    }
-
+    
+    // 初期ロールの作成
     @Transactional
     public void initializeRoles() {
-        if (roleRepository.count() == 0) {
-            Role adminRole = new Role();
-            adminRole.setName("ROLE_ADMIN");
-            roleRepository.save(adminRole);
-
-            Role userRole = new Role();
-            userRole.setName("ROLE_USER");
-            roleRepository.save(userRole);
-
-            Role managerRole = new Role();
-            managerRole.setName("ROLE_MANAGER");
-            roleRepository.save(managerRole);
-        }
+        createRoleIfNotFound("ROLE_ADMIN");
+        createRoleIfNotFound("ROLE_MANAGER");
+        createRoleIfNotFound("ROLE_USER");
     }
-
+    
+    // 管理者アカウントの初期化
     @Transactional
     public void initializeAdminUser() {
-        if (userRepository.count() == 0) {
-            User admin = new User();
-            admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("admin"));
-            admin.setEmail("admin@example.com");
-            admin.setEnabled(true);
-
+        if (!userRepository.existsByUsername("admin")) {
+            User adminUser = new User();
+            adminUser.setUsername("admin");
+            adminUser.setPassword(passwordEncoder.encode("admin"));
+            adminUser.setEmail("admin@example.com");
+            adminUser.setEnabled(true);
+            
             Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-                    .orElseThrow(() -> new RuntimeException("管理者ロールが見つかりません。"));
+                    .orElseThrow(() -> new RuntimeException("管理者ロールが見つかりません"));
             Set<Role> roles = new HashSet<>();
             roles.add(adminRole);
-            admin.setRoles(roles);
-
-            userRepository.save(admin);
+            adminUser.setRoles(roles);
+            
+            userRepository.save(adminUser);
+        }
+    }
+    
+    private void createRoleIfNotFound(String name) {
+        if (roleRepository.findByName(name).isEmpty()) {
+            Role role = new Role();
+            role.setName(name);
+            roleRepository.save(role);
         }
     }
 
-    public Iterable<User> getAllUsers() {
-        return userRepository.findAll();
+    // ユーザーを検索するメソッド
+    public List<User> searchUsers(String username, String email) {
+        List<User> allUsers = userRepository.findAll();
+        
+        return allUsers.stream()
+            .filter(user -> (username == null || username.isEmpty() || 
+                          user.getUsername().toLowerCase().contains(username.toLowerCase())))
+            .filter(user -> (email == null || email.isEmpty() || 
+                          user.getEmail().toLowerCase().contains(email.toLowerCase())))
+            .collect(Collectors.toList());
     }
 } 

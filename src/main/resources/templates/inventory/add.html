@@ -1,74 +1,68 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: html(~{::title}, ~{::section}, ~{::pageTitle}, ~{::pageActions})}">
 <head>
-    <meta charset="UTF-8">
-    <title th:text="${title}">新規商品登録</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title th:text="${title ?: '新規商品登録'} + ' | 在庫管理システム'">新規商品登録 | 在庫管理システム</title>
 </head>
 <body>
-    <div class="container">
-        <h1 th:text="${title}">新規商品登録</h1>
+    <!-- ページタイトル部分 -->
+    <h2 class="mb-0" th:fragment="pageTitle">
+        <i class="bi bi-plus-circle text-primary"></i>
+        <span th:text="${title ?: '新規商品登録'}">新規商品登録</span>
+    </h2>
         
-        <form th:action="@{/inventory/add}" method="post" class="form">
-            <div class="form-group">
-                <label for="itemId">商品ID</label>
-                <input type="text" id="itemId" name="itemId" th:value="${item?.itemId}" required>
+    <!-- ページアクション部分 -->
+    <div th:fragment="pageActions">
+        <a th:href="@{/inventory}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            在庫一覧に戻る
+        </a>
             </div>
             
-            <div class="form-group">
-                <label for="name">商品名</label>
-                <input type="text" id="name" name="name" th:value="${item?.name}" required>
+    <!-- メインコンテンツ部分 -->
+    <section>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <form th:action="@{/inventory/add}" method="post" class="row g-3">
+                            <div class="col-md-6">
+                                <div th:replace="~{fragments/form-components :: text-input('itemId', '商品ID', ${item?.itemId}, true)}"></div>
             </div>
             
-            <div class="form-group">
-                <label for="category">カテゴリー</label>
-                <select id="category" name="category" required>
-                    <option value="">カテゴリーを選択</option>
-                    <option th:each="cat : ${categories}"
-                            th:value="${cat}"
-                            th:text="${cat}"
-                            th:selected="${item?.category == cat}">
-                    </option>
-                </select>
+                            <div class="col-md-6">
+                                <div th:replace="~{fragments/form-components :: text-input('name', '商品名', ${item?.name}, true)}"></div>
             </div>
             
-            <div class="form-group">
-                <label for="price">価格</label>
-                <input type="number" id="price" name="price" th:value="${item?.price}" min="0" required>
+                            <div class="col-md-6">
+                                <div th:replace="~{fragments/form-components :: select('category', 'カテゴリー', ${categories}, ${item?.category}, true)}"></div>
             </div>
             
-            <div class="form-group">
-                <label for="quantity">在庫数</label>
-                <input type="number" id="quantity" name="quantity" th:value="${item?.quantity}" min="0" required>
+                            <div class="col-md-6">
+                                <div th:replace="~{fragments/form-components :: currency-input('price', '価格', ${item?.price}, true)}"></div>
             </div>
             
-            <div class="form-group">
-                <label for="minQuantity">最小在庫数</label>
-                <input type="number" id="minQuantity" name="minQuantity" th:value="${item?.minQuantity}" min="0" required>
+                            <div class="col-md-4">
+                                <div th:replace="~{fragments/form-components :: number-input('quantity', '在庫数', ${item?.quantity}, 0, true)}"></div>
             </div>
             
-            <div class="form-group">
-                <label for="maxQuantity">最大在庫数</label>
-                <input type="number" id="maxQuantity" name="maxQuantity" th:value="${item?.maxQuantity}" min="0" required>
+                            <div class="col-md-4">
+                                <div th:replace="~{fragments/form-components :: number-input('minQuantity', '最小在庫数', ${item?.minQuantity}, 0, true)}"></div>
             </div>
             
-            <div class="form-group">
-                <label for="status">ステータス</label>
-                <select id="status" name="status" required>
-                    <option value="">ステータスを選択</option>
-                    <option th:each="stat : ${statuses}"
-                            th:value="${stat}"
-                            th:text="${stat}"
-                            th:selected="${item?.status == stat}">
-                    </option>
-                </select>
+                            <div class="col-md-4">
+                                <div th:replace="~{fragments/form-components :: number-input('maxQuantity', '最大在庫数', ${item?.maxQuantity}, 0, true)}"></div>
             </div>
             
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">登録</button>
-                <a href="/inventory" class="btn">キャンセル</a>
+                            <!-- ステータスフィールドは非表示 -->
+                            <input type="hidden" id="status" name="status" value="AVAILABLE">
+                            
+                            <div th:replace="~{fragments/form-components :: submit-buttons(@{/inventory})}"></div>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </form>
     </div>
+    </section>
 </body>
-</html> 
+</html>

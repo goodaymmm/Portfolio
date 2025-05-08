@@ -1,131 +1,130 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: html(~{::title}, ~{::section}, ~{::pageTitle}, ~{::pageActions})}">
 <head>
     <meta charset="UTF-8">
-    <title>ユーザー管理</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .user-card {
-            transition: transform 0.2s;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .user-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .role-badge {
-            font-size: 0.8rem;
-            padding: 0.3rem 0.6rem;
-        }
-        .action-buttons .btn {
-            margin: 0 0.2rem;
-        }
-    </style>
+    <title>ユーザー管理 | 在庫管理システム</title>
 </head>
 <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">
+    <!-- ページタイトル部分 -->
+    <h2 class="mb-0" th:fragment="pageTitle">
                 <i class="bi bi-people-fill text-primary"></i>
                 ユーザー管理
             </h2>
-            <div>
-                <a th:href="@{/admin/users/new}" class="btn btn-primary me-2">
+    
+    <!-- ページアクション部分 -->
+    <div th:fragment="pageActions" class="action-buttons">
+                <a th:href="@{/admin/users/new}" class="btn btn-primary">
                     <i class="bi bi-person-plus"></i>
                     新規ユーザー登録
+                </a>
+                <a th:href="@{/admin/logs}" class="btn btn-info me-2">
+                    <i class="bi bi-journal-text"></i>
+                    全操作ログ
                 </a>
                 <a th:href="@{/admin/logs/export}" class="btn btn-success">
                     <i class="bi bi-file-earmark-excel"></i>
                     全操作ログエクスポート
                 </a>
-            </div>
-        </div>
+    </div>
 
-        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            <span th:text="${message}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
-        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <span th:text="${error}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
-        <div class="row">
-            <div th:each="user : ${users}" class="col-md-4 mb-4">
-                <div class="card user-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <h5 class="card-title mb-1">
-                                    <i class="bi bi-person-circle text-primary"></i>
-                                    <span th:text="${user.username}"></span>
-                                </h5>
-                                <p class="text-muted mb-0" th:text="${user.email}"></p>
-                            </div>
-                            <span th:class="${'badge ' + (user.enabled ? 'bg-success' : 'bg-danger')}">
-                                <i th:class="${user.enabled ? 'bi bi-check-circle' : 'bi bi-x-circle'}"></i>
-                                <span th:text="${user.enabled ? '有効' : '無効'}"></span>
-                            </span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <div th:each="role : ${user.roles}" class="d-inline-block me-2">
-                                <span th:class="${'badge ' + (role.name == 'ROLE_ADMIN' ? 'bg-danger' : 
-                                                             role.name == 'ROLE_MANAGER' ? 'bg-warning' : 
-                                                             'bg-info')}"
-                                      th:text="${role.name}">
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="action-buttons">
-                            <a th:href="@{/admin/users/{id}/edit(id=${user.id})}" 
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-pencil"></i>
-                                編集
-                            </a>
-                            <a th:href="@{/admin/logs/export/user/{id}(id=${user.id})}" 
-                               class="btn btn-outline-success btn-sm">
-                                <i class="bi bi-file-earmark-excel"></i>
-                                操作ログ
-                            </a>
-                            <button class="btn btn-outline-danger btn-sm"
-                                    th:onclick="'deleteUser(' + ${user.id} + ')'">
-                                <i class="bi bi-trash"></i>
-                                削除
-                            </button>
-                        </div>
-                    </div>
+    <!-- メインコンテンツ部分 -->
+    <section>
+    <div class="card search-card mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3">
+                <i class="bi bi-search"></i> ユーザー検索
+            </h5>
+            <form th:action="@{/admin/users/search}" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="username" class="form-label">ユーザー名</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="ユーザー名で検索">
                 </div>
-            </div>
+                <div class="col-md-4">
+                    <label for="email" class="form-label">メールアドレス</label>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="メールアドレスで検索">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> 検索
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ユーザー名</th>
+                            <th>メールアドレス</th>
+                            <th>ロール</th>
+                            <th>ステータス</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td>
+                                <i class="bi bi-person-circle text-primary"></i>
+                                <span th:text="${user.username}"></span>
+                            </td>
+                            <td th:text="${user.email}"></td>
+                            <td>
+                                <div th:each="role : ${user.roles}" class="d-inline-block me-2">
+                                    <span th:class="${'badge ' + (role.name == 'ROLE_ADMIN' ? 'bg-danger' : 
+                                                                 role.name == 'ROLE_MANAGER' ? 'bg-warning' : 
+                                                                 'bg-info')}"
+                                          th:text="${role.name}">
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <span th:class="${'badge ' + (user.enabled ? 'bg-success' : 'bg-danger')}">
+                                    <i th:class="${user.enabled ? 'bi bi-check-circle' : 'bi bi-x-circle'}"></i>
+                                    <span th:text="${user.enabled ? '有効' : '無効'}"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a th:href="@{/admin/users/{id}/edit(id=${user.id})}" 
+                                       class="btn btn-outline-primary">
+                                        <i class="bi bi-pencil"></i> 編集
+                                    </a>
+                                    <a th:href="@{/admin/logs/user/{username}(username=${user.username})}" 
+                                       class="btn btn-outline-info">
+                                        <i class="bi bi-list-check"></i> 操作ログ
+                                    </a>
+                                    <form th:action="@{/admin/users/{id}(id=${user.id})}" method="post" class="d-inline">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                   th:onclick="'confirmDelete(this.form, ' + ${user.id} + ')'">
+                                            <i class="bi bi-trash"></i> 削除
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(users)}">
+                            <td colspan="5" class="text-center">ユーザーがありません</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </section>
+
     <script th:inline="javascript">
-        function deleteUser(userId) {
+        function confirmDelete(form, userId) {
             if (confirm('このユーザーを削除してもよろしいですか？')) {
-                fetch(`/admin/users/${userId}`, {
-                    method: 'DELETE'
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('ユーザーの削除に失敗しました');
-                    }
-                    window.location.reload();
-                })
-                .catch(error => {
-                    alert(error.message);
-                });
+                form.submit();
             }
         }
     </script>
 </body>
-</html> 
+</html>

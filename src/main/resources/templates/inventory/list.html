@@ -1,46 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: html(~{::title}, ~{::section}, ~{::pageTitle}, ~{::pageActions})}">
 <head>
     <meta charset="UTF-8">
-    <title>在庫一覧</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>在庫一覧 | 在庫管理システム</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .low-stock {
-            background-color: rgba(255, 0, 0, 0.1);
-        }
-        .card {
-            transition: transform 0.2s;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 1.5rem;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .search-card {
-            background-color: #f8f9fa;
-        }
-        .action-buttons .btn {
-            margin-right: 0.5rem;
-        }
-        .table th {
-            background-color: #f8f9fa;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">
+    <!-- ページタイトル部分 -->
+    <h2 class="mb-0" th:fragment="pageTitle">
                 <i class="bi bi-box-seam text-primary"></i>
                 在庫一覧
             </h2>
-            <div class="action-buttons" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
+    
+    <!-- ページアクション部分 -->
+    <div th:fragment="pageActions" class="action-buttons" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
                 <a th:href="@{/inventory/add}" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> 商品追加
                 </a>
@@ -53,21 +31,10 @@
                 <a th:href="@{/inventory/low-stock}" class="btn btn-warning">
                     <i class="bi bi-exclamation-triangle"></i> 在庫不足商品
                 </a>
-            </div>
         </div>
 
-        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            <span th:text="${message}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
-        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <span th:text="${error}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
+    <!-- メインコンテンツ部分 -->
+    <section>
         <div class="card search-card mb-4">
             <div class="card-body">
                 <h5 class="card-title mb-3">
@@ -160,8 +127,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </section>
 </body>
 </html> 

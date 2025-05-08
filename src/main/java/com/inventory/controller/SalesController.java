@@ -4,6 +4,7 @@ import com.inventory.model.Sales;
 import com.inventory.model.User;
 import com.inventory.security.CustomUserDetails;
 import com.inventory.service.InventoryService;
+import com.inventory.service.LogService;
 import com.inventory.service.SalesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -36,6 +38,9 @@ public class SalesController {
 
     @Autowired
     private InventoryService inventoryService;
+    
+    @Autowired
+    private LogService logService;
 
     @GetMapping
     public String showSalesList(Model model) {
@@ -139,11 +144,20 @@ public class SalesController {
             @RequestParam Long itemId,
             @RequestParam int quantity,
             Authentication authentication,
+            HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
         try {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             User user = userDetails.getUser();
-            salesService.recordSale(itemId, quantity, user.getId());
+            
+            // 売上記録
+            Sales sale = salesService.recordSale(itemId, quantity, user.getId());
+            
+            // ログを記録
+            String details = String.format("商品ID: %d、数量: %d、金額: %.0f円の売上を記録しました", 
+                itemId, quantity, sale.getUnitPrice() * quantity);
+            logService.logAction("売上登録", details, user, request.getRemoteAddr());
+            
             redirectAttributes.addFlashAttribute("message", "売上を記録しました");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());

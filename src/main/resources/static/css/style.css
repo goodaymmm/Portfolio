@@ -1,15 +1,25 @@
 /* General Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Noto Sans JP', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
+    background-color: #f8f9fa;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+}
+
+.container-fluid {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.mt-4 {
+    margin-top: 1.5rem !important;
 }
 
 /* Header Styles */
@@ -239,25 +249,583 @@ textarea {
     margin: 100px auto;
     padding: 2rem;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .login-container h2 {
-    text-align: center;
-    margin-bottom: 2rem;
+    margin-top: 0;
+    color: #333;
 }
 
 .register-link {
-    text-align: center;
+    display: block;
     margin-top: 1rem;
+    text-align: center;
+    color: #007bff;
+    text-decoration: none;
 }
 
-/* Actions Section */
 .actions {
-    margin-bottom: 1rem;
+    margin-top: 2rem;
 }
 
 .actions .btn {
     margin-right: 0.5rem;
-} 
+    margin-bottom: 0.5rem;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card {
+    transition: transform 0.2s;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.search-card {
+    background-color: #f8f9fa;
+}
+
+.form-card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+}
+
+.table th {
+    background-color: #f8f9fa;
+}
+
+.low-stock {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.action-buttons .btn {
+    margin-right: 0.5rem;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 1;
+    border-radius: 0.25rem;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
+
+.required-field::after {
+    content: '*';
+    color: red;
+    margin-left: 2px;
+}
+
+/* === 追加: 売上カードスタイル === */
+.sales-card {
+    transition: transform 0.2s;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sales-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* === 新しいモダンヘッダーのスタイル === */
+.modern-header {
+    position: relative;
+    background: transparent;
+    color: #fff;
+    padding: 0;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.header-bg-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2c3e50, #3498db, #2980b9);
+    z-index: -1;
+}
+
+.modern-header .navbar {
+    padding: 0.8rem 0;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    font-size: 1.8rem;
+    margin-right: 12px;
+    color: #fff;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand:hover .brand-logo {
+    transform: scale(1.05) rotate(5deg);
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    opacity: 0.8;
+}
+
+.modern-header .nav-item {
+    position: relative;
+    margin: 0 5px;
+}
+
+.modern-header .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.modern-header .nav-link:hover,
+.modern-header .nav-link:focus,
+.modern-header .nav-link.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.modern-header .nav-link i {
+    font-size: 1.3rem;
+    margin-right: 8px;
+}
+
+.user-profile-section {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.user-menu:hover,
+.user-menu:focus {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-right: 8px;
+    color: #fff;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.2;
+}
+
+.user-role {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    letter-spacing: 0.5px;
+}
+
+.dropdown-toggle::after {
+    margin-left: 10px;
+}
+
+.custom-toggler {
+    border: none;
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 8px 12px;
+}
+
+.custom-toggler:focus {
+    box-shadow: none;
+}
+
+.custom-toggler i {
+    font-size: 1.5rem;
+}
+
+.dropdown-menu {
+    border: none;
+    padding: 0.5rem 0;
+    border-radius: 12px;
+}
+
+.dropdown-item {
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-item i {
+    margin-right: 8px;
+}
+
+.dropdown-item:hover, 
+.dropdown-item:focus {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item.text-danger:hover,
+.dropdown-item.text-danger:focus {
+    background-color: #fff5f5;
+}
+
+/* レスポンシブデザイン用の調整 */
+@media (max-width: 992px) {
+    .brand-subtitle {
+        display: none;
+    }
+    
+    .modern-header .navbar-collapse {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .user-profile-section {
+        margin-top: 15px;
+    }
+    
+    .navbar-nav {
+        margin-bottom: 15px;
+    }
+}
+
+/* ページタイトルの装飾強化 */
+h2.mb-0 {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+h2.mb-0:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3498db, transparent);
+    border-radius: 3px;
+}
+
+/* === カードデザインの強化 === */
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.card-title i {
+    margin-right: 8px;
+    color: #3498db;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+    border-top: none;
+    background-color: #f8f9fa;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+/* ボタンスタイルの強化 */
+.btn {
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn i {
+    margin-right: 6px;
+    font-size: 1.1rem;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-primary:hover, 
+.btn-primary:focus {
+    background-color: #2980b9;
+    border-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+.btn-success {
+    background-color: #2ecc71;
+    border-color: #2ecc71;
+}
+
+.btn-success:hover, 
+.btn-success:focus {
+    background-color: #27ae60;
+    border-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+}
+
+.btn-info {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-info:hover, 
+.btn-info:focus {
+    background-color: #2980b9;
+    border-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+.btn-warning {
+    background-color: #f39c12;
+    border-color: #f39c12;
+    color: #fff;
+}
+
+.btn-warning:hover, 
+.btn-warning:focus {
+    background-color: #e67e22;
+    border-color: #e67e22;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    color: #495057;
+    border-color: #495057;
+    background-color: #fff;
+    border-width: 2px;
+}
+
+.btn-outline-secondary:hover, 
+.btn-outline-secondary:focus {
+    background-color: #495057;
+    border-color: #495057;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(73, 80, 87, 0.3);
+}
+
+.btn-outline-primary {
+    color: #007bff;
+    border-color: #007bff;
+    background-color: #fff;
+}
+
+.btn-outline-primary:hover, 
+.btn-outline-primary:focus {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+    background-color: #fff;
+}
+
+.btn-outline-danger:hover, 
+.btn-outline-danger:focus {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+}
+
+/* フォームスタイルの強化 */
+.form-control {
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    padding: 0.6rem 1rem;
+    height: auto;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    border-color: #3498db;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+
+.form-select {
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    padding: 0.6rem 1rem;
+    height: auto;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    border-color: #3498db;
+}
+
+/* バッジデザインの強化 */
+.badge {
+    padding: 0.35em 0.65em;
+    font-weight: 600;
+    border-radius: 30px;
+}
+
+.bg-info {
+    background-color: #3498db !important;
+}
+
+.bg-danger {
+    background-color: #e74c3c !important;
+}
+
+/* アラートのデザイン強化 */
+.alert {
+    border: none;
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.alert-info {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: #2980b9;
+}
+
+.alert-success {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #27ae60;
+}
+
+.alert-danger {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #c0392b;
+}
+
+.alert-warning {
+    background-color: rgba(243, 156, 18, 0.1);
+    color: #e67e22;
+}
+
+/* ヘッダーのユーザー情報セクション */
+.user-section {
+    color: #fff;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-right: 8px;
+}
+
+.user-role-badge {
+    font-size: 0.7rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 3px 8px;
+    border-radius: 10px;
+    display: inline-block;
+}

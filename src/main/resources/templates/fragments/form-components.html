@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <!-- テキスト入力フィールド -->
+    <div th:fragment="text-input(id, label, value, required)" class="mb-3">
+        <label th:for="${id}" class="form-label" th:classappend="${required ? 'required-field' : ''}">
+            [[${label}]]
+        </label>
+        <input type="text" th:id="${id}" th:name="${id}" class="form-control" 
+               th:value="${value}" th:required="${required}">
+    </div>
+    
+    <!-- 数値入力フィールド -->
+    <div th:fragment="number-input(id, label, value, min, required)" class="mb-3">
+        <label th:for="${id}" class="form-label" th:classappend="${required ? 'required-field' : ''}">
+            [[${label}]]
+        </label>
+        <input type="number" th:id="${id}" th:name="${id}" class="form-control" 
+               th:value="${value}" th:min="${min}" th:required="${required}">
+    </div>
+    
+    <!-- 通貨入力フィールド -->
+    <div th:fragment="currency-input(id, label, value, required)" class="mb-3">
+        <label th:for="${id}" class="form-label" th:classappend="${required ? 'required-field' : ''}">
+            [[${label}]]
+        </label>
+        <div class="input-group">
+            <input type="number" th:id="${id}" th:name="${id}" class="form-control" 
+                   th:value="${value}" min="0" th:required="${required}">
+            <span class="input-group-text">円</span>
+        </div>
+    </div>
+    
+    <!-- セレクトボックス -->
+    <div th:fragment="select(id, label, options, selected, required)" class="mb-3">
+        <label th:for="${id}" class="form-label" th:classappend="${required ? 'required-field' : ''}">
+            [[${label}]]
+        </label>
+        <select th:id="${id}" th:name="${id}" class="form-select" th:required="${required}">
+            <option value="">選択してください</option>
+            <option th:each="option : ${options}"
+                    th:value="${option}"
+                    th:text="${option}"
+                    th:selected="${option == selected}">
+            </option>
+        </select>
+    </div>
+    
+    <!-- 送信ボタングループ -->
+    <div th:fragment="submit-buttons(cancelUrl)" class="d-flex justify-content-end mt-4">
+        <a th:href="${cancelUrl}" class="btn btn-outline-secondary me-2">キャンセル</a>
+        <button type="submit" class="btn btn-primary">保存</button>
+    </div>
+</body>
+</html> 
