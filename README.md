@@ -88,14 +88,58 @@ Spring Bootを使用したWebアプリケーションで、在庫の管理、CSV
 - **デモユーザーアカウント**：
   - 管理者とほぼ同等の権限がありますが、
   セキュリティ上の理由からユーザー管理機能は制限されています。
-  ※新規ユーザー登録・ユーザー情報編集が使用不可
+  ※ユーザー管理画面へのアクセスとユーザー検索のみが使用可能
   - 在庫管理、売上管理など主要機能はすべて利用可能です
 
-### ユーザー作成画面
-![ユーザー作成](/docs/images/user_regist.png)
+## ユーザー管理画面スクリーンショット
+<details>
+<summary><strong>ユーザー作成</strong> - 新規ユーザー登録</summary>
+<br>
 
-### ユーザー編集画面
-![ユーザー編集](/docs/images/user_eddit.png)
+![ユーザー作成](docs/images/user_regist.png)
+
+</details>
+
+<details>
+<summary><strong>ユーザー編集</strong> - 既存ユーザー編集</summary>
+<br>
+
+![ユーザー編集](docs/images/user_eddit.png)
+
+</details>
+
+<details>
+<summary><strong>個人ログ画面</strong> - 個人履歴</summary>
+<br>
+
+![ユーザーログ](docs/images/SoloLog.png)
+
+</details>
+
+<details>
+<summary><strong>全体ログ</strong> -　全ユーザー操作履歴</summary>
+<br>
+
+![全ユーザーログ](docs/images/AllLog.png)
+
+</details>
+
+<details>
+<summary><strong>ログCSV</strong> -　全ユーザー操作履歴CSV</summary>
+<br>
+
+![全ユーザーログCSV](docs/images/AllLogCSV.png)
+
+</details>
+
+<details>
+<summary><strong>ユーザー削除</strong> - 削除操作</summary>
+<br>
+
+![削除操作1](docs/images/delete.png)
+![削除操作2](docs/images/delete2.png)
+![削除操作3](docs/images/delete3.png)
+</details>
 
 - **ユーザー管理機能**：
   - セキュリティ上の理由からデモユーザーはアクセスできませんが、
@@ -106,8 +150,27 @@ Spring Bootを使用したWebアプリケーションで、在庫の管理、CSV
 デモ環境は自由にお試しいただけますが、実際の業務データは含まれていません。
 テスト用のサンプルデータが入力された状態になっています。
 
-## 本番環境AWS構成図
+## AWS構成図
 作成中
+
+## AWS アーキテクチャ
+<details>
+<summary>☁️ <strong>システム構成図</strong> - AWS Infrastructure</summary>
+<br>
+
+**アーキテクチャ特徴：**
+- **セキュア3層構成**: Public Subnet（ALB）→ Private Subnet（EC2）→ Private Subnet（RDS）
+- **DNS管理**: Route 53によるドメイン管理
+- **負荷分散**: Application Load Balancerによる可用性向上
+- **データベース**: RDS MySQL（完全プライベート配置）
+- **セキュリティ**: NAT Gatewayによる一方向インターネットアクセス
+
+**セキュリティ設計：**
+- データベースを外部から完全に隔離
+- セキュリティグループによる最小権限アクセス制御
+- プライベートサブネット配置による攻撃面の最小化
+
+</details>
 
 ### 在庫管理
 - 商品の追加、編集、削除
