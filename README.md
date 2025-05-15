@@ -6,7 +6,7 @@ Spring Bootを使用したWebアプリケーションで、在庫の管理、CSV
 
 ## バージョン情報
 - 現在のバージョン: 2.2
-- 開発環境: H2 Database
+- 開発環境: H2 Database（開発）、MySQL（本番）
 - セキュリティ設定: 適用済み
 
 ## 更新履歴
@@ -34,6 +34,7 @@ Spring Bootを使用したWebアプリケーションで、在庫の管理、CSV
   - Spring Security
   - Spring Data JPA
 - データベース
+  - MySQL（本番環境）
   - H2 Database（開発環境）
 - セキュリティ
   - Spring Security
@@ -63,6 +64,7 @@ Spring Bootを使用したWebアプリケーションで、在庫の管理、CSV
 4. 設定ファイルの準備
    - `src/main/resources/application.properties.example`を`application.properties`にリネーム
    - 必要に応じて設定を変更（データベース接続情報、パスワードなど）
+   - デフォルトでは開発環境用のH2データベース（インメモリ）が設定されています
 5. `mvn spring-boot:run`でアプリケーションを起動
 
 ## ログイン情報（開発環境）
