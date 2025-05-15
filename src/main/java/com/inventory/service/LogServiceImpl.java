@@ -12,6 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -42,7 +44,10 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public List<LogEntry> getAllLogs() {
-        return logEntryRepository.findAll();
+        // findAllの結果を取得し、タイムスタンプの降順でソートして返す
+        return logEntryRepository.findAll().stream()
+                .sorted(Comparator.comparing(LogEntry::getTimestamp).reversed())
+                .collect(Collectors.toList());
     }
     
     @Override
@@ -52,8 +57,10 @@ public class LogServiceImpl implements LogService {
         // ヘッダー行を書き込み
         writer.write("ID,アクション,詳細,ユーザー名,タイムスタンプ,IPアドレス\n");
         
-        // すべてのログエントリを取得
-        List<LogEntry> logs = logEntryRepository.findAll();
+        // すべてのログエントリを取得し、降順でソート
+        List<LogEntry> logs = logEntryRepository.findAll().stream()
+                .sorted(Comparator.comparing(LogEntry::getTimestamp).reversed())
+                .collect(Collectors.toList());
         
         // デバッグ用：ログ件数を出力
         System.out.println("エクスポート対象ログ件数: " + logs.size());

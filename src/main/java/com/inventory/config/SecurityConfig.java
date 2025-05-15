@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -21,6 +20,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import com.inventory.model.User;
 
 @Configuration
@@ -31,12 +31,16 @@ public class SecurityConfig {
     private final UserService userService;
     private final LogService logService;
     private final CustomUserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SecurityConfig(UserService userService, LogService logService, CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(UserService userService, LogService logService, 
+                         CustomUserDetailsService userDetailsService,
+                         PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.logService = logService;
         this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -46,6 +50,7 @@ public class SecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/api/init").permitAll()
                 .requestMatchers("/login", "/users/register").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/admin/logs/**").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers("/admin/users/**").hasAnyRole("ADMIN", "DEMO")
                 .requestMatchers("/admin/**").hasAnyRole("ADMIN", "DEMO", "MANAGER")
                 .requestMatchers("/sales/**").hasAnyRole("ADMIN", "DEMO", "MANAGER")
@@ -73,20 +78,22 @@ public class SecurityConfig {
     }
 
     @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        HiddenHttpMethodFilter filter = new HiddenHttpMethodFilter();
+        filter.setMethodParam("_method");
+        return filter;
+    }
+
+    @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
         serializer.setSameSite("Strict");
         return serializer;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
     
     @Bean

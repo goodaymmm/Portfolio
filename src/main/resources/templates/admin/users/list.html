@@ -99,10 +99,11 @@
                                        class="btn btn-outline-info">
                                         <i class="bi bi-list-check"></i> 操作ログ
                                     </a>
-                                    <form th:action="@{/admin/users/{id}(id=${user.id})}" method="post" class="d-inline">
+                                    <form th:action="@{/admin/users/{id}(id=${user.id})}" method="post" class="d-inline"
+                                          onsubmit="return confirm('このユーザーを削除してもよろしいですか？');">
                                         <input type="hidden" name="_method" value="DELETE">
-                                        <button type="button" class="btn btn-outline-danger" 
-                                                   th:onclick="'confirmDelete(this.form, ' + ${user.id} + ')'">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <button type="submit" class="btn btn-outline-danger">
                                             <i class="bi bi-trash"></i> 削除
                                         </button>
                                     </form>
@@ -120,11 +121,7 @@
     </section>
 
     <script th:inline="javascript">
-        function confirmDelete(form, userId) {
-            if (confirm('このユーザーを削除してもよろしいですか？')) {
-                form.submit();
-            }
-        }
+        // 不要なJavaScriptは削除
     </script>
 </body>
 </html>

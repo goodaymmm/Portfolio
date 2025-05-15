@@ -215,22 +215,37 @@ public class AdminUserController {
         }
     }
     
-    // ユーザー削除機能
+    // ユーザー削除機能（POST）
+    @PostMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteUserPost(@PathVariable Long id, 
+                           Authentication authentication, 
+                           HttpServletRequest request,
+                           RedirectAttributes redirectAttributes) {
+        return deleteUserInternal(id, authentication, request, redirectAttributes);
+    }
+    
+    // ユーザー削除機能（DELETE）
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    @ResponseBody
-    public ResponseEntity<?> deleteUser(@PathVariable Long id, 
-                                      Authentication authentication, 
-                                      HttpServletRequest request) {
+    public String deleteUser(@PathVariable Long id, 
+                           Authentication authentication, 
+                           HttpServletRequest request,
+                           RedirectAttributes redirectAttributes) {
+        return deleteUserInternal(id, authentication, request, redirectAttributes);
+    }
+    
+    // 共通の削除処理
+    private String deleteUserInternal(Long id, Authentication authentication, 
+                                   HttpServletRequest request,
+                                   RedirectAttributes redirectAttributes) {
         try {
             // 削除対象のユーザー情報を取得 - findByIdSafeを使用
             Optional<User> targetUserOptional = userService.findByIdSafe(id);
             
             if (!targetUserOptional.isPresent()) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "指定されたユーザーが見つかりません。");
-                return ResponseEntity.badRequest().body(response);
+                redirectAttributes.addFlashAttribute("error", "指定されたユーザーが見つかりません。");
+                return "redirect:/admin/users/list";
             }
             
             User targetUser = targetUserOptional.get();
@@ -244,17 +259,13 @@ public class AdminUserController {
             String details = "ユーザー '" + username + "' を削除しました";
             logService.logAction("ユーザー削除", details, currentUser, request.getRemoteAddr());
             
-            // 成功レスポンスを返す
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "ユーザーを削除しました");
-            return ResponseEntity.ok(response);
+            // 成功メッセージを設定
+            redirectAttributes.addFlashAttribute("message", "ユーザーを削除しました");
+            return "redirect:/admin/users/list";
         } catch (Exception e) {
-            // エラーレスポンスを返す
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "削除に失敗しました: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
+            // エラーメッセージを設定
+            redirectAttributes.addFlashAttribute("error", "削除に失敗しました: " + e.getMessage());
+            return "redirect:/admin/users/list";
         }
     }
     
