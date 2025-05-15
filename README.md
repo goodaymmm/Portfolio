@@ -94,7 +94,7 @@ Spring Bootを使用したWebアプリケーションで、在庫の管理、CSV
 ![ユーザー作成](/docs/images/user_regist.png)
 
 ### ユーザー編集画面
-![ユーザー編集](/docs/images/user_edit.png)
+![ユーザー編集](/docs/images/user_eddit.png)
 
 - **ユーザー管理機能**：
   - セキュリティ上の理由からデモユーザーはアクセスできませんが、
