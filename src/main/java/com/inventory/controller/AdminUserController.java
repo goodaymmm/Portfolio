@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/users")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'DEMO')")
 public class AdminUserController {
 
     @Autowired
@@ -35,6 +35,7 @@ public class AdminUserController {
     private LogService logService;
 
     @GetMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String showCreateForm(Model model, Authentication authentication, HttpServletRequest request) {
         // アクセスログを記録
         logUserPageAccess("ユーザー作成ページアクセス", authentication, request);
@@ -44,6 +45,7 @@ public class AdminUserController {
     }
 
     @GetMapping("/new")
+    @PreAuthorize("hasRole('ADMIN')")
     public String showNewUserForm(Model model, Authentication authentication, HttpServletRequest request) {
         // アクセスログを記録
         logUserPageAccess("新規ユーザー登録ページアクセス", authentication, request);
@@ -53,6 +55,7 @@ public class AdminUserController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String createUser(@ModelAttribute User user,
                            @RequestParam String role,
                            Authentication authentication,
@@ -109,6 +112,7 @@ public class AdminUserController {
     }
     
     @GetMapping("/{id}/edit")
+    @PreAuthorize("hasRole('ADMIN')")
     public String showEditForm(@PathVariable(required = false) Long id, Model model, 
                               Authentication authentication, HttpServletRequest request, 
                               RedirectAttributes redirectAttributes) {
@@ -146,6 +150,7 @@ public class AdminUserController {
     }
     
     @PostMapping("/{id}/update")
+    @PreAuthorize("hasRole('ADMIN')")
     public String updateUser(@PathVariable Long id,
                             @ModelAttribute User user,
                             @RequestParam(required = false) String currentPassword,
@@ -212,6 +217,7 @@ public class AdminUserController {
     
     // ユーザー削除機能
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseBody
     public ResponseEntity<?> deleteUser(@PathVariable Long id, 
                                       Authentication authentication, 

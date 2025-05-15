@@ -46,8 +46,11 @@ public class SecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/api/init").permitAll()
                 .requestMatchers("/login", "/users/register").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/admin/**").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers("/sales/**").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers("/admin/users/**").hasAnyRole("ADMIN", "DEMO")
+                .requestMatchers("/admin/**").hasAnyRole("ADMIN", "DEMO", "MANAGER")
+                .requestMatchers("/sales/**").hasAnyRole("ADMIN", "DEMO", "MANAGER")
+                .requestMatchers("/inventory/**").hasAnyRole("ADMIN", "DEMO", "MANAGER", "USER")
+                .requestMatchers("/").hasAnyRole("ADMIN", "DEMO", "MANAGER", "USER")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -104,11 +107,10 @@ public class SecurityConfig {
                 // デフォルトのリダイレクト先へ
                 response.sendRedirect("/inventory");
             } catch (Exception e) {
-                // エラーログ出力
                 System.err.println("ログイン処理中にエラーが発生しました: " + e.getMessage());
-                // エラー発生時も通常の遷移先へ
+                e.printStackTrace(); // スタックトレースを出力
                 try {
-                    response.sendRedirect("/inventory");
+                    response.sendRedirect("/login?error");
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

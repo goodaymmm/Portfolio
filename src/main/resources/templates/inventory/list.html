@@ -18,7 +18,7 @@
             </h2>
     
     <!-- ページアクション部分 -->
-    <div th:fragment="pageActions" class="action-buttons" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
+    <div th:fragment="pageActions" class="action-buttons" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_DEMO')">
                 <a th:href="@{/inventory/add}" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> 商品追加
                 </a>

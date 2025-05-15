@@ -29,13 +29,13 @@
                                 <span class="nav-text">在庫一覧</span>
                             </a>
                         </li>
-                        <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
+                        <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_DEMO')">
                             <a class="nav-link" th:href="@{/sales}">
                                 <i class="bi bi-graph-up"></i> 
                                 <span class="nav-text">売上管理</span>
                             </a>
                         </li>
-                        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_DEMO')">
                             <a class="nav-link" th:href="@{/admin/users/list}">
                                 <i class="bi bi-people"></i> 
                                 <span class="nav-text">ユーザー管理</span>
@@ -47,8 +47,9 @@
                         <div class="user-info me-3">
                             <span class="user-name" sec:authentication="name">ユーザー</span>
                             <span class="user-role-badge" sec:authorize="hasRole('ROLE_ADMIN')">管理者</span>
-                            <span class="user-role-badge" sec:authorize="hasRole('ROLE_MANAGER') and !hasRole('ROLE_ADMIN')">マネージャー</span>
-                            <span class="user-role-badge" sec:authorize="hasRole('ROLE_USER') and !hasRole('ROLE_ADMIN') and !hasRole('ROLE_MANAGER')">一般ユーザー</span>
+                            <span class="user-role-badge" sec:authorize="hasRole('ROLE_DEMO')">デモユーザー</span>
+                            <span class="user-role-badge" sec:authorize="hasRole('ROLE_MANAGER') and !hasRole('ROLE_ADMIN') and !hasRole('ROLE_DEMO')">マネージャー</span>
+                            <span class="user-role-badge" sec:authorize="hasRole('ROLE_USER') and !hasRole('ROLE_ADMIN') and !hasRole('ROLE_MANAGER') and !hasRole('ROLE_DEMO')">一般ユーザー</span>
                         </div>
                             <form th:action="@{/logout}" method="post">
                             <button type="submit" class="btn btn-outline-light btn-sm">

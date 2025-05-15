@@ -18,15 +18,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getRoles().stream()
-                .map(role -> {
-                    String roleName = role.getName();
-                    // ROLE_プレフィックスが既に含まれている場合は、そのまま使用
-                    // 含まれていない場合は追加する
-                    if (!roleName.startsWith("ROLE_")) {
-                        roleName = "ROLE_" + roleName;
-                    }
-                    return new SimpleGrantedAuthority(roleName);
-                })
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
     }
 

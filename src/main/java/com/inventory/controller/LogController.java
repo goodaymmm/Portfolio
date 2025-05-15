@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/logs")
-@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'DEMO')")
 public class LogController {
 
     @Autowired

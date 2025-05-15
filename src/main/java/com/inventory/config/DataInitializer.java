@@ -11,21 +11,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    @Autowired
-    private InventoryRepository inventoryRepository;
+    private final UserService userService;
+    private final InventoryRepository inventoryRepository;
 
     @Autowired
-    private UserService userService;
+    public DataInitializer(UserService userService, InventoryRepository inventoryRepository) {
+        this.userService = userService;
+        this.inventoryRepository = inventoryRepository;
+    }
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        // ロールの初期化
+        // アプリケーション起動時にロールとユーザーを初期化
         userService.initializeRoles();
-        
-        // 管理者ユーザーの初期化
         userService.initializeAdminUser();
-
+        
         // 在庫データの初期化
         if (inventoryRepository.count() == 0) {
             // サンプルデータの作成
@@ -62,5 +63,7 @@ public class DataInitializer implements CommandLineRunner {
             item3.setStatus(InventoryItem.ItemStatus.ACTIVE);
             inventoryRepository.save(item3);
         }
+
+        System.out.println("データ初期化が完了しました");
     }
 } 

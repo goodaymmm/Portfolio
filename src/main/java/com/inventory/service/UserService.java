@@ -148,6 +148,7 @@ public class UserService {
     @Transactional
     public void initializeRoles() {
         createRoleIfNotFound("ROLE_ADMIN");
+        createRoleIfNotFound("ROLE_DEMO");  // デモロールを追加
         createRoleIfNotFound("ROLE_MANAGER");
         createRoleIfNotFound("ROLE_USER");
     }
@@ -169,6 +170,23 @@ public class UserService {
             adminUser.setRoles(roles);
             
             userRepository.save(adminUser);
+        }
+        
+        // デモユーザーの初期化
+        if (!userRepository.existsByUsername("demo")) {
+            User demoUser = new User();
+            demoUser.setUsername("demo");
+            demoUser.setPassword(passwordEncoder.encode("demo"));
+            demoUser.setEmail("demo@example.com");
+            demoUser.setEnabled(true);
+            
+            Role demoRole = roleRepository.findByName("ROLE_DEMO")
+                    .orElseThrow(() -> new RuntimeException("デモロールが見つかりません"));
+            Set<Role> roles = new HashSet<>();
+            roles.add(demoRole);
+            demoUser.setRoles(roles);
+            
+            userRepository.save(demoUser);
         }
     }
     

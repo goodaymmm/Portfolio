@@ -64,10 +64,12 @@
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- Flyway is temporarily disabled
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
+        -->
         
         <!-- CSV Processing -->
         <dependency>

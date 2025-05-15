@@ -30,7 +30,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/sales")
-@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'DEMO')")
 public class SalesController {
 
     @Autowired

@@ -55,7 +55,7 @@ public class UserController {
         return "redirect:/users/list";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO')")
     @GetMapping("/list")
     public String listUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
