@@ -131,26 +131,22 @@ Spring Bootを使用したWebアプリケーションで、在庫の管理、CSV
 ![削除操作3](docs/images/delete3.png)
 </details>
 
-AWSへの公開を停止ました。
+### AWSへの公開を停止ました。
 
-~~ AWS アーキテクチャ~~
-<details>
-<summary><strong> ~~AWS構成について</strong> - 構成紹介~~ </summary>
-<br>
+~~AWS アーキテクチャ~~
+~~AWS構成について</strong> - 構成紹介~~
 
-**アーキテクチャ特徴：**
-- **セキュア3層構成**: Public Subnet（ALB）→ Private Subnet（EC2）→ Private Subnet（RDS）
-- **DNS管理**: Route 53によるドメイン管理
-- **負荷分散**: Application Load Balancerによる可用性向上
-- **データベース**: RDS MySQL（完全プライベート配置）
-- **セキュリティ**: NAT Gatewayによる一方向インターネットアクセス
+~~アーキテクチャ特徴：~~
+~~セキュア3層構成: Public Subnet（ALB）→ Private Subnet（EC2）→ Private Subnet（RDS）~~
+~~DNS管理: Route 53によるドメイン管理~~
+~~負荷分散: Application Load Balancerによる可用性向上~~
+~~データベース: RDS MySQL（完全プライベート配置）~~
+~~セキュリティ: NAT Gatewayによる一方向インターネットアクセス~~
 
-**セキュリティ設計：**
-- データベースを外部から完全に隔離
-- セキュリティグループによる最小権限アクセス制御
-- プライベートサブネット配置による攻撃面の最小化
-
-</details>
+~~セキュリティ設計：~~
+~~データベースを外部から完全に隔離~~
+~~セキュリティグループによる最小権限アクセス制御~~
+~~プライベートサブネット配置による攻撃面の最小化~~
 
 ## 基本機能
 ### 在庫管理
